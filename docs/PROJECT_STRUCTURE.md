@@ -116,9 +116,10 @@ cafe-menu-recommendation-system/
 4. 이상치/중복 표현 정규화 검토
 
 ### STEP 5. MySQL 적재
-1. `cafe`, `menu`, `cafe_menu_rank` upsert
-2. rank 재계산
-3. 적재 결과 조회 검증
+1. `docs/sql/schema.sql` 기준 스키마 초기화
+2. `cafe`, `menu`, `cafe_menu_rank` upsert
+3. rank 재계산
+4. 적재 결과 조회 검증
 
 ### STEP 6. API 구축
 1. `GET /menus/recommend` 구현

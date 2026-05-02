@@ -67,7 +67,7 @@ cafe (1) ---- (N) cafe_menu_rank (N) ---- (1) menu
 | cafe_id | BIGINT | PK(FK), NOT NULL | 카페 ID |
 | menu_id | BIGINT | PK(FK), NOT NULL | 메뉴 ID |
 | count | INT | NOT NULL | 리뷰 언급 수 |
-| rank | INT | NOT NULL | 카페 내 순위 |
+| menu_rank | INT | NOT NULL | 카페 내 순위 |
 | updated_at | DATETIME | NOT NULL | 갱신일시 |
 
 PK: `(cafe_id, menu_id)`

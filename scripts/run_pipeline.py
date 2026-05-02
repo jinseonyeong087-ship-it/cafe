@@ -3,6 +3,7 @@ import argparse
 from analyzer.ad_filter import mark_ad_review
 from analyzer.menu_analyzer import count_menu_frequency
 from crawler.crawler_blog import crawl_single_page
+from storage.mysql_client import MySQLRepository
 
 
 # 이 함수는 STEP1(크롤링)만 단독으로 검증하는 함수
@@ -31,8 +32,13 @@ def run_pipeline(url: str, cafe_name: str) -> None:
     # STEP4: 빈도 분석
     menu_counts = count_menu_frequency(processed_reviews)
 
+    # STEP5: MySQL 적재
+    mysql_repo = MySQLRepository()
+    updated_count = mysql_repo.upsert_menu_ranks(cafe_name, menu_counts)
+
     print(f"[STEP2] 저장 리뷰 수: {inserted_count}")
     print(f"[STEP4] 메뉴 빈도: {menu_counts}")
+    print(f"[STEP5] MySQL 반영 건수: {updated_count}")
 
 
 if __name__ == "__main__":

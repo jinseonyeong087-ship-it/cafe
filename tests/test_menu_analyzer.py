@@ -8,6 +8,13 @@ def test_extract_menu_names() -> None:
     assert "티라미수" in menus
 
 
+# 이 테스트는 메뉴 별칭이 표준 메뉴명으로 정규화되는지 검증하는 테스트
+def test_extract_menu_names_with_alias() -> None:
+    menus = extract_menu_names("아아랑 바라 조합이 좋아요")
+    assert "아메리카노" in menus
+    assert "바닐라라떼" in menus
+
+
 # 이 테스트는 광고 리뷰 제외 후 메뉴 빈도가 집계되는지 검증하는 테스트
 def test_count_menu_frequency() -> None:
     reviews = [

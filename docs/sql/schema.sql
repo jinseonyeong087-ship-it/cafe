@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS cafe_menu_rank (
   cafe_id BIGINT NOT NULL,
   menu_id BIGINT NOT NULL,
   count INT NOT NULL,
-  rank INT NOT NULL,
+  menu_rank INT NOT NULL,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (cafe_id, menu_id),
   CONSTRAINT fk_cmr_cafe FOREIGN KEY (cafe_id) REFERENCES cafe(id),

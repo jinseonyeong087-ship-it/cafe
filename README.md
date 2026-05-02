@@ -51,8 +51,11 @@ cp .env.example .env
 # 테스트
 pytest -q
 
-# 파이프라인 샘플 실행
-python scripts/run_pipeline.py
+# MySQL 스키마 초기화
+PYTHONPATH=. python scripts/init_mysql.py
+
+# 파이프라인 실행 (STEP1~STEP5)
+PYTHONPATH=. python scripts/run_pipeline.py --step all --url "https://ko.wikipedia.org/wiki/이디야커피" --cafe "이디야"
 
 # API 실행
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload

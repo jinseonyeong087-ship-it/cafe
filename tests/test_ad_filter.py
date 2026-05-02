@@ -9,6 +9,13 @@ def test_calculate_ad_score() -> None:
 
 # 이 테스트는 임계치 이상일 때 광고 리뷰로 판정되는지 검증하는 테스트
 def test_mark_ad_review() -> None:
-    review = {"content": "광고 협찬 체험단 후기"}
+    review = {"content": "유료광고 협찬 체험단 후기"}
     result = mark_ad_review(review)
     assert result["is_ad"] is True
+
+
+# 이 테스트는 광고 문구가 없는 일반 리뷰는 비광고로 판정되는지 검증하는 테스트
+def test_non_ad_review() -> None:
+    review = {"content": "아메리카노 맛이 깔끔하고 매장이 조용해서 좋았어요"}
+    result = mark_ad_review(review)
+    assert result["is_ad"] is False
