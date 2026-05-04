@@ -16,6 +16,11 @@
 
 ### Response 200
 
+- 기본 정렬 기준: 비광고 리뷰 기준 메뉴 언급량
+- 보정 기준: 긍정 맛평가(예: 맛있다/추천/고소하다) 문맥 가중치 반영
+- 광고 리뷰는 집계에서 완전 제외
+- 가중치 설정: `.env`의 `POSITIVE_TASTE_WEIGHT` (기본 1.5)
+
 ```json
 {
   "items": [
@@ -45,6 +50,15 @@
 ---
 
 ## 3. 파이프라인 입력 포맷(스크립트 기준)
+
+### 검색어 기반 URL 자동 수집
+`python scripts/run_pipeline.py --step all --query "이디야 신메뉴 후기" --cafe "이디야" --max-urls 10`
+
+- `--query`: 검색어(필수)
+- `--max-urls`: 수집 URL 최대 개수(기본 10)
+- 검색 결과에서 블로그 URL을 추출해 기존 파이프라인에 연결
+- 수집 실패 시 URL 0건으로 종료될 수 있음(네트워크/검색 페이지 정책 영향)
+
 
 `python scripts/run_pipeline.py --step all --urls-file <경로>` 사용 시 아래 형식을 지원합니다.
 

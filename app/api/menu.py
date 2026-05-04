@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Query
 
-from analyzer.menu_analyzer import count_menu_frequency
+from analyzer.menu_analyzer import count_menu_frequency, count_positive_menu_mentions
+from app.core.config import settings
 from app.services.recommendation import build_recommendations
 from storage.mongo_client import MongoRepository
 
@@ -17,5 +18,13 @@ def recommend_menu(
     mongo_repo = MongoRepository()
     reviews = mongo_repo.get_reviews_by_cafe(cafe)
     menu_counts = count_menu_frequency(reviews)
-    recommendations = build_recommendations(cafe, menu_counts, top_n, mode)
+    positive_counts = count_positive_menu_mentions(reviews)
+    recommendations = build_recommendations(
+        cafe,
+        menu_counts,
+        top_n,
+        mode,
+        positive_counts=positive_counts,
+        positive_weight=settings.positive_taste_weight,
+    )
     return {"mode": mode, "items": [item.model_dump() for item in recommendations]}

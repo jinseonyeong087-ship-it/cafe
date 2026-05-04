@@ -51,6 +51,7 @@ pytest -q
 
 ### A. 파이프라인 고도화
 - [x] `scripts/run_pipeline.py` 다중 URL 입력 지원 (`--urls-file`)
+- [x] 검색어 기반 URL 자동 수집(`--query`, `--max-urls`) 추가
 - [ ] 카페명/소스별 수집 성능 로그 저장
 - [ ] 광고/비광고 건수 로그 출력 및 저장
 
@@ -72,6 +73,8 @@ pytest -q
 
 ### C. 추천 API 정합성 강화
 - [ ] `GET /menus/recommend`를 MySQL 집계 조회 중심으로 정리
+- [x] 광고 리뷰 100% 제외 + 긍정 맛평가 가중치 반영 로직 적용
+- [x] 긍정 맛평가 가중치 `.env(POSITIVE_TASTE_WEIGHT)` 외부 설정화
 - [ ] `mode=popular|trending` 기준에 맞는 점수/정렬 로직 명확화
 - [ ] 데이터 없음(404), 파라미터 오류(400), 내부 오류(500) 응답 일관화
 
