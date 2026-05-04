@@ -16,3 +16,33 @@ MENU_ALIAS_MAP = {
     "콜브": "콜드브루",
     "딸라": "딸기라떼",
 }
+
+# 이 딕셔너리는 메뉴를 음료/디저트 카테고리로 분류하기 위한 매핑이다.
+MENU_CATEGORY_MAP = {
+    "아메리카노": "drink",
+    "카페라떼": "drink",
+    "라떼": "drink",
+    "바닐라라떼": "drink",
+    "돌체라떼": "drink",
+    "콜드브루": "drink",
+    "디카페인": "drink",
+    "에스프레소": "drink",
+    "카푸치노": "drink",
+    "모카": "drink",
+    "흑당라떼": "drink",
+    "말차라떼": "drink",
+    "딸기라떼": "drink",
+    "자몽에이드": "drink",
+    "레몬에이드": "drink",
+    "복숭아아이스티": "drink",
+    "허니브레드": "dessert",
+    "크루아상": "dessert",
+    "티라미수": "dessert",
+    "치즈케이크": "dessert",
+    "케이크": "dessert",
+    "쿠키": "dessert",
+    "마들렌": "dessert",
+    "샌드위치": "dessert",
+    "버터떡": "dessert",
+    "디저트": "dessert",
+}
