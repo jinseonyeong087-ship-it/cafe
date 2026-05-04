@@ -21,12 +21,12 @@ def run_step1(url: str, cafe_name: str) -> list[dict]:
 
 # 이 함수는 STEP1~STEP5의 최소 파이프라인을 순차 실행하는 함수
 # 실행 예시: python scripts/run_pipeline.py --step all --url "https://example.com" --cafe "샘플카페"
-def run_pipeline(url: str, cafe_name: str) -> dict:
+def run_pipeline(url: str, cafe_name: str, cafe_profile: str = "franchise") -> dict:
     from storage.mongo_client import MongoRepository
 
     reviews = run_step1(url, cafe_name)
 
-    processed_reviews = [mark_ad_review(review) for review in reviews]
+    processed_reviews = [mark_ad_review(review, cafe_profile=cafe_profile) for review in reviews]
     ad_count = sum(1 for review in processed_reviews if review.get("is_ad"))
     non_ad_count = len(processed_reviews) - ad_count
 
@@ -75,7 +75,7 @@ def load_targets_from_file(urls_file: str, default_cafe: str) -> list[tuple[str,
 
 
 # 이 함수는 다중 타겟 파이프라인을 실행하고 요약 통계를 출력하는 함수
-def run_pipeline_batch(targets: list[tuple[str, str]]) -> None:
+def run_pipeline_batch(targets: list[tuple[str, str]], cafe_profile: str = "franchise") -> None:
     success = 0
     failed = 0
     cafe_stats = defaultdict(lambda: {"targets": 0, "success": 0, "failed": 0, "reviews": 0, "ad": 0, "non_ad": 0})
@@ -84,7 +84,7 @@ def run_pipeline_batch(targets: list[tuple[str, str]]) -> None:
         cafe_stats[cafe_name]["targets"] += 1
         print(f"\n[BATCH] ({idx}/{len(targets)}) cafe={cafe_name} url={url}")
         try:
-            result = run_pipeline(url, cafe_name)
+            result = run_pipeline(url, cafe_name, cafe_profile=cafe_profile)
             success += 1
             cafe_stats[cafe_name]["success"] += 1
             cafe_stats[cafe_name]["reviews"] += result["reviews"]
@@ -113,6 +113,7 @@ if __name__ == "__main__":
     parser.add_argument("--query")
     parser.add_argument("--max-urls", type=int, default=10)
     parser.add_argument("--cafe", default="샘플카페")
+    parser.add_argument("--cafe-profile", choices=["franchise", "small_cafe"], default="franchise")
     args = parser.parse_args()
 
     if not args.url and not args.urls_file and not args.query:
@@ -133,11 +134,11 @@ if __name__ == "__main__":
     else:
         if args.urls_file:
             targets = load_targets_from_file(args.urls_file, args.cafe)
-            run_pipeline_batch(targets)
+            run_pipeline_batch(targets, cafe_profile=args.cafe_profile)
         elif args.query:
             urls = collect_blog_urls_from_query(args.query, max_urls=args.max_urls)
             print(f"[SEARCH] query='{args.query}' 수집 URL 수: {len(urls)}")
             targets = [(args.cafe, url) for url in urls]
-            run_pipeline_batch(targets)
+            run_pipeline_batch(targets, cafe_profile=args.cafe_profile)
         else:
-            run_pipeline(args.url, args.cafe)
+            run_pipeline(args.url, args.cafe, cafe_profile=args.cafe_profile)
