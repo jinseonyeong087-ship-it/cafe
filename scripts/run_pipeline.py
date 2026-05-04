@@ -5,6 +5,7 @@ from pathlib import Path
 from analyzer.ad_filter import mark_ad_review
 from analyzer.menu_analyzer import count_menu_frequency
 from crawler.crawler_blog import crawl_single_page
+from crawler.search_collector import collect_blog_urls_from_query
 from storage.mysql_client import MySQLRepository
 
 
@@ -109,22 +110,34 @@ if __name__ == "__main__":
     parser.add_argument("--step", choices=["step1", "all"], default="step1")
     parser.add_argument("--url")
     parser.add_argument("--urls-file")
+    parser.add_argument("--query")
+    parser.add_argument("--max-urls", type=int, default=10)
     parser.add_argument("--cafe", default="샘플카페")
     args = parser.parse_args()
 
-    if not args.url and not args.urls_file:
-        parser.error("--url 또는 --urls-file 중 하나는 필수입니다.")
+    if not args.url and not args.urls_file and not args.query:
+        parser.error("--url 또는 --urls-file 또는 --query 중 하나는 필수입니다.")
 
     if args.step == "step1":
         if args.urls_file:
             targets = load_targets_from_file(args.urls_file, args.cafe)
             for cafe_name, url in targets:
                 run_step1(url, cafe_name)
+        elif args.query:
+            urls = collect_blog_urls_from_query(args.query, max_urls=args.max_urls)
+            print(f"[SEARCH] query='{args.query}' 수집 URL 수: {len(urls)}")
+            for url in urls:
+                run_step1(url, args.cafe)
         else:
             run_step1(args.url, args.cafe)
     else:
         if args.urls_file:
             targets = load_targets_from_file(args.urls_file, args.cafe)
+            run_pipeline_batch(targets)
+        elif args.query:
+            urls = collect_blog_urls_from_query(args.query, max_urls=args.max_urls)
+            print(f"[SEARCH] query='{args.query}' 수집 URL 수: {len(urls)}")
+            targets = [(args.cafe, url) for url in urls]
             run_pipeline_batch(targets)
         else:
             run_pipeline(args.url, args.cafe)
