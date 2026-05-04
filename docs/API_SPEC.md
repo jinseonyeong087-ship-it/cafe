@@ -42,4 +42,25 @@
 - `GET /cafes` : 카페 목록 조회
 - `GET /menus/trending` : 전체 인기 메뉴 조회
 
+---
+
+## 3. 파이프라인 입력 포맷(스크립트 기준)
+
+`python scripts/run_pipeline.py --step all --urls-file <경로>` 사용 시 아래 형식을 지원합니다.
+
+### urls 파일 형식
+- 한 줄에 1건
+- 기본 형식: `카페명|URL`
+- 호환 형식: `URL` (카페명은 `--cafe` 기본값 사용)
+- 빈 줄/`#` 주석 줄은 무시
+
+예시:
+```text
+이디야|https://blog.naver.com/sample1
+이디야|https://blog.naver.com/sample2
+스타벅스|https://blog.naver.com/sample3
+# 주석 라인
+https://blog.naver.com/sample4
+```
+
 확장 시에도 기존 `GET /menus/recommend`의 응답 계약은 하위호환을 유지합니다.
