@@ -122,7 +122,7 @@ class MySQLRepository:
         cur = conn.cursor(dictionary=True)
         cur.execute(
             """
-            SELECT c.name AS cafe, m.name AS menu, cmr.count AS count, cmr.menu_rank AS rank
+            SELECT c.name AS cafe, m.name AS menu, cmr.count AS count, cmr.menu_rank AS menu_rank
             FROM cafe_menu_rank cmr
             JOIN cafe c ON c.id = cmr.cafe_id
             JOIN menu m ON m.id = cmr.menu_id

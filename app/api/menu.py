@@ -43,7 +43,7 @@ def recommend_menu(
         # trending: 현재는 count + rank 보정으로 가벼운 최신성 반영(추후 trend_score 컬럼 연동 예정)
         if mode == "trending":
             menu_counts = {
-                row["menu"]: int(row["count"] + max(0, 10 - int(row["rank"]))) for row in ranked_rows
+                row["menu"]: int(row["count"] + max(0, 10 - int(row["menu_rank"]))) for row in ranked_rows
             }
 
         recommendations = build_recommendations(cafe, menu_counts, top_n=top_n, mode=mode, positive_counts={})
