@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>카페 메뉴 추천 MVP</title>
+  <style>
+    body{font-family:Arial,sans-serif;max-width:900px;margin:40px auto;padding:0 16px;background:#faf7f2;color:#222}
+    .card{background:#fff;border-radius:12px;padding:18px;box-shadow:0 4px 14px rgba(0,0,0,.08);margin-bottom:16px}
+    input,select,button{padding:10px;border-radius:8px;border:1px solid #ddd}
+    button{background:#6f4e37;color:#fff;border:none;cursor:pointer}
+    .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    ul{padding-left:18px}
+  </style>
+</head>
+<body>
+  <h1>☕ 카페 메뉴 추천 (MVP)</h1>
+  <div class="card">
+    <div class="row">
+      <input id="cafe" placeholder="카페명 입력" value="이디야"/>
+      <select id="mode"><option value="popular">popular</option><option value="trending">trending</option></select>
+      <select id="topn"><option>3</option><option>5</option><option>10</option></select>
+      <button onclick="run()">추천 조회</button>
+    </div>
+    <p id="msg"></p>
+  </div>
+  <div class="card"><h3>전체</h3><ul id="items"></ul></div>
+  <div class="card"><h3>음료</h3><ul id="drinks"></ul></div>
+  <div class="card"><h3>디저트</h3><ul id="desserts"></ul></div>
+<script>
+function fill(id,list){const el=document.getElementById(id);el.innerHTML='';(list||[]).forEach(i=>{const li=document.createElement('li');li.textContent=`#${i.rank} ${i.menu} (${i.count}) - ${i.reason}`;el.appendChild(li);});}
+async function run(){
+ const cafe=document.getElementById('cafe').value; const mode=document.getElementById('mode').value; const top_n=document.getElementById('topn').value;
+ const msg=document.getElementById('msg'); msg.textContent='조회 중...';
+ try{const r=await fetch(`/menus/recommend?cafe=${encodeURIComponent(cafe)}&mode=${mode}&top_n=${top_n}`); const data=await r.json();
+ if(!r.ok){msg.textContent=`오류 ${r.status}: ${data.detail||'실패'}`; fill('items',[]); fill('drinks',[]); fill('desserts',[]); return;}
+ msg.textContent='조회 성공'; fill('items',data.items); fill('drinks',data.drinks); fill('desserts',data.desserts);
+ }catch(e){msg.textContent='네트워크 오류: '+e.message;}
+}
+</script>
+</body>
+</html>

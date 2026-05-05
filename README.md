@@ -1,5 +1,9 @@
 # ☕ Cafe Menu Recommendation System
 
+![MVP UI](docs/images/mvp-ui.png)
+
+> 현재는 **MVP UI + FastAPI 백엔드** 구조입니다. (추후 본격 UI로 확장 예정)
+
 광고성 리뷰를 제외하고, 실제 사용자 리뷰 기반으로 카페별 인기 메뉴를 추천하는 **크롤링 + 데이터 분석 + API 서비스** 프로젝트입니다.
 
 ---
