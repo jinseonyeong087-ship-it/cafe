@@ -83,3 +83,55 @@ class MySQLRepository:
         cur.close()
         conn.close()
         return updated
+
+    # 이 함수는 카페별 후보 메뉴 누적치를 menu_candidate 테이블에 upsert하는 함수
+    def upsert_menu_candidates(self, cafe_name: str, candidate_counts: Dict[str, int], review_threshold: int = 3) -> int:
+        if not candidate_counts:
+            return 0
+
+        cafe_id = self.upsert_cafe(cafe_name)
+        conn = self._get_connection()
+        cur = conn.cursor()
+
+        updated = 0
+        for candidate_name, mention_count in candidate_counts.items():
+            cur.execute(
+                """
+                INSERT INTO menu_candidate (cafe_id, candidate_name, mention_count, first_seen_at, last_seen_at, status)
+                VALUES (%s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'new')
+                ON DUPLICATE KEY UPDATE
+                  mention_count = mention_count + VALUES(mention_count),
+                  last_seen_at = CURRENT_TIMESTAMP,
+                  status = CASE
+                    WHEN status = 'new' AND (mention_count + VALUES(mention_count)) >= %s THEN 'reviewing'
+                    ELSE status
+                  END
+                """,
+                (cafe_id, candidate_name, mention_count, review_threshold),
+            )
+            updated += 1
+
+        conn.commit()
+        cur.close()
+        conn.close()
+        return updated
+
+    # 이 함수는 카페별 메뉴 랭크를 조회해 API 응답 계산에 사용하는 함수
+    def get_menu_ranks(self, cafe_name: str) -> list[dict]:
+        conn = self._get_connection()
+        cur = conn.cursor(dictionary=True)
+        cur.execute(
+            """
+            SELECT c.name AS cafe, m.name AS menu, cmr.count AS count, cmr.menu_rank AS rank
+            FROM cafe_menu_rank cmr
+            JOIN cafe c ON c.id = cmr.cafe_id
+            JOIN menu m ON m.id = cmr.menu_id
+            WHERE c.name = %s
+            ORDER BY cmr.menu_rank ASC
+            """,
+            (cafe_name,),
+        )
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
+        return rows

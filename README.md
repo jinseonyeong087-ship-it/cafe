@@ -71,8 +71,9 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 - [x] MySQL 스키마 초기화 스크립트 및 적재 로직 구현
 - [x] 광고 필터 키워드 확장 및 테스트 강화
 - [x] 메뉴 사전/별칭 정규화 도입
-- [x] 테스트 코드 작성 및 통과(현재 8 passed)
-- [ ] 카페별 실제 리뷰 URL 다건 수집 파이프라인화
+- [x] 테스트 코드 작성 및 통과(현재 12 passed)
+- [x] 카페별 실제 리뷰 URL 다건 수집 파이프라인화 (`--urls-file`, `--query`)
+- [x] 카페명/소스별 수집 성능 로그 + 광고/비광고 건수 로그 저장(JSONL/JSON)
 - [ ] 메뉴 사전 자동 후보 추출 및 검수 플로우
 - [ ] Render 배포 설정
 
@@ -88,10 +89,10 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ---
 
 ## 6. 다음 작업 우선순위 (바로 실행용)
-1. `scripts/run_pipeline.py`에 다중 URL 입력 기능 추가 (`--urls-file`)
-2. 광고/비광고 건수 로그 출력 및 저장
-3. 카페별 메뉴 사전 보강 + 후보 자동추출(`menu_candidate`) 연결
-4. API를 MySQL 집계 조회 중심으로 전환
+1. 카페별 메뉴 사전 보강 + 후보 자동추출(`menu_candidate`) 연결
+2. API를 MySQL 집계 조회 중심으로 전환
+3. `mode=popular|trending` 점수/정렬 규칙 명확화
+4. 오류 응답(400/404/500) 일관화
 5. Render 배포 설정(`render.yaml`) 및 배포 검증
 
 ---

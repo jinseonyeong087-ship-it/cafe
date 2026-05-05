@@ -54,5 +54,6 @@ CREATE TABLE IF NOT EXISTS menu_candidate (
   first_seen_at DATETIME NOT NULL,
   last_seen_at DATETIME NOT NULL,
   status VARCHAR(50) NOT NULL,
+  UNIQUE KEY uq_mc_cafe_candidate (cafe_id, candidate_name),
   CONSTRAINT fk_mc_cafe FOREIGN KEY (cafe_id) REFERENCES cafe(id)
 );
