@@ -64,8 +64,10 @@ class MySQLRepository:
         cur = conn.cursor()
 
         updated = 0
+        current_menu_ids: list[int] = []
         for rank, (menu_name, count) in enumerate(sorted_items, start=1):
             menu_id = self.upsert_menu(menu_name)
+            current_menu_ids.append(menu_id)
             cur.execute(
                 """
                 INSERT INTO cafe_menu_rank (cafe_id, menu_id, count, menu_rank)
@@ -78,6 +80,13 @@ class MySQLRepository:
                 (cafe_id, menu_id, count, rank),
             )
             updated += 1
+
+        # 이 로직은 현재 집계에 없는 과거 메뉴 랭크를 정리해 stale 데이터 노출을 방지한다.
+        placeholders = ", ".join(["%s"] * len(current_menu_ids))
+        cur.execute(
+            f"DELETE FROM cafe_menu_rank WHERE cafe_id = %s AND menu_id NOT IN ({placeholders})",
+            (cafe_id, *current_menu_ids),
+        )
 
         conn.commit()
         cur.close()
